@@ -1,0 +1,6 @@
+name = "ecommerce-frontend"
+compatibility_date = "2026-07-17"
+pages_build_output_dir = ".next"
+
+# 💡 মনে আছে তো? এখানে কোনো [[services]] বা WORKER_SELF_REFERENCE রাখা যাবে না!
+# কারণ তোর ড্যাশবোর্ডে কোনো বাইন্ডিং একটিভ নেই।
