@@ -9,6 +9,18 @@ import type { Category, Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 
+// ক্যাটাগরি অনুযায়ী রিয়েলিস্টিক ডাইনামিক ইমেজ জেনারেট করার জন্য একটা হেল্পার ফাংশন
+const getFallbackCategoryImage = (categoryName: string) => {
+  const name = categoryName.toLowerCase();
+  if (name.includes('laptop')) return 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80';
+  if (name.includes('phone') || name.includes('mobile')) return 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&auto=format&fit=crop&q=80';
+  if (name.includes('electro')) return 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&auto=format&fit=crop&q=80';
+  if (name.includes('game') || name.includes('gaming')) return 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&auto=format&fit=crop&q=80';
+  
+  // ডিফল্ট গ্যাজেট ছবি (যদি কোনোটার সাথে না মিলে)
+  return 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=400&auto=format&fit=crop&q=80';
+};
+
 export default function HomePage() {
   const router = useRouter();
   const { addToCart, totalItems, isLoading: cartLoading } = useCart();
@@ -56,7 +68,7 @@ export default function HomePage() {
       {/* 🏛️ Amazon Signature Light Gray Background Layout */}
       <main className="min-h-screen bg-[#eaeded] text-neutral-900 font-sans antialiased pb-12">
         
-        {/* 📦 Amazon Style Clean Banner Section (ভিডিও রিমুভড, সাইজ একদম ০ এমবি!) */}
+        {/* 📦 Amazon Style Clean Banner Section */}
         <section className="relative bg-gradient-to-b from-neutral-200 to-[#eaeded] py-16 px-6 border-b border-neutral-300">
           <div className="max-w-7xl mx-auto flex flex-col items-center text-center space-y-6">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
@@ -82,9 +94,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 🛍️ FEATURED PRODUCTS (Amazon Style Container) */}
+        {/* 🛍️ FEATURED PRODUCTS */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-          <div className="bg-white p-6 border border-neutral-200 rounded-none mb-8">
+          <div className="bg-white p-6 border border-neutral-200 rounded-none mb-8 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2 border-b border-neutral-200 pb-4">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">Featured Products</h2>
@@ -107,7 +119,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {isLoading ? (
                 Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="aspect-[3/4] bg-neutral-100 border border-neutral-200 animate-pulse" />
+                  <div key={index} className="aspect-[3/4] bg-neutral-100 border border-neutral-200 animate-pulse rounded-none" />
                 ))
               ) : (
                 featuredProducts.map((product) => (
@@ -131,28 +143,47 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 🗂️ SHOP BY CATEGORY */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-8">
-          <div className="bg-white p-6 border border-neutral-200 rounded-none">
-            <div className="mb-6 border-b border-neutral-200 pb-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">Shop by Category</h2>
-              <p className="text-xs sm:text-sm text-neutral-500">Browse our wide selection of minimal categories</p>
+        {/* 🗂️ SHOP BY CATEGORY (ফিক্সড: ফাও ইমোজি সরিয়ে ১০০% রিয়ালিস্টিক পিকচারস) */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 relative z-10">
+          <div className="bg-white p-5 border border-neutral-200 rounded-none shadow-sm">
+            
+            <div className="mb-5">
+              <h2 className="text-xl font-bold text-neutral-950 tracking-tight">
+                Shop by Category
+              </h2>
+              <p className="text-xs text-neutral-500 font-normal mt-0.5">
+                Browse our wide selection of minimal categories
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {categories.length === 0
-                ? Array.from({ length: 6 }).map((_, index) => (
-                    <div key={index} className="h-32 bg-neutral-100 border border-neutral-200 animate-pulse" />
+                ? Array.from({ length: 4 }).map((_, index) => (
+                    <div key={index} className="h-44 bg-neutral-100 border border-neutral-200 animate-pulse rounded-none" />
                   ))
-                : categories.map((category) => (
+                : categories.slice(0, 4).map((category) => (
                     <Link
                       key={category._id}
                       href={`/products?category=${encodeURIComponent(category._id)}`}
-                      className="p-4 bg-white border border-neutral-200 rounded-none hover:border-amber-500 transition-all text-center group"
+                      className="flex flex-col justify-between bg-neutral-50 p-4 border border-neutral-200 rounded-none hover:shadow-sm group transition-all"
                     >
-                      <div className="text-3xl mb-2 transform group-hover:scale-105 transition-transform">🛍️</div>
-                      <h3 className="font-bold text-neutral-800 text-xs mb-0.5 group-hover:text-[#c45500] group-hover:underline">{category.name}</h3>
-                      <p className="text-[10px] text-neutral-400">Explore Collection</p>
+                      <h3 className="font-bold text-neutral-900 text-sm mb-3 group-hover:text-[#c45500]">
+                        {category.name}
+                      </h3>
+                      
+                      {/* ক্যাটাগরি ইমেজের আসল জায়গা */}
+                      <div className="relative w-full h-32 bg-white flex items-center justify-center overflow-hidden mb-3 border border-neutral-100">
+                        <img 
+                          src={category.image || getFallbackCategoryImage(category.name)} 
+                          alt={category.name} 
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+
+                      <span className="text-[11px] font-medium text-[#007185] group-hover:text-[#c45500] group-hover:underline">
+                        See more
+                      </span>
                     </Link>
                   ))}
             </div>
@@ -161,7 +192,7 @@ export default function HomePage() {
 
         {/* 📊 STATS */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white p-6 border border-neutral-200 rounded-none">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white p-6 border border-neutral-200 rounded-none shadow-sm">
             {[
               { value: '10K+', label: 'Products Available' },
               { value: '50K+', label: 'Happy Customers' },
@@ -178,7 +209,7 @@ export default function HomePage() {
 
         {/* ✉️ NEWSLETTER */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="bg-white p-8 border border-neutral-200 rounded-none text-center space-y-4">
+          <div className="bg-white p-8 border border-neutral-200 rounded-none text-center space-y-4 shadow-sm">
             <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">Subscribe to Our Newsletter</h2>
             <p className="text-neutral-500 max-w-md mx-auto text-xs sm:text-sm leading-relaxed">
               Get the latest updates on exclusive drops, seasonal sales, and custom curated gear straight to your inbox.
