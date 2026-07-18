@@ -72,7 +72,7 @@ export default function ProductsPage() {
       try {
         const response = await categoriesApi.getAll();
         setCategories(response.data.categories);
-      } catch {
+      } catch (box) {
         // ignore category load failures
       }
     }
@@ -105,7 +105,6 @@ export default function ProductsPage() {
     router.push(`/products?search=${encodeURIComponent(query)}`);
   };
 
-  // 🛒 ফিক্সড কার্ট হ্যান্ডলার (টাইপস্ক্রিপ্ট এরর খতম)
   async function handleAddToCart(product: any): Promise<void> {
     try {
       await addToCart(product._id, 1);
@@ -118,207 +117,203 @@ export default function ProductsPage() {
     <>
       <Header cartCount={totalItems} onCartClick={() => router.push('/cart')} onSearchSubmit={handleSearchSubmit} />
 
-      {/* 🖤 আল্ট্রা ডার্ক লাক্সারি বডি */}
-      <main className="min-h-screen bg-neutral-950 text-neutral-300 selection:bg-amber-400 selection:text-black antialiased">
+      {/* 📦 Modern Minimalist Amazon Palette Background */}
+      <main className="min-h-screen bg-[#f7f8fa] text-gray-900 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
         
-        {/* 🏷️ পেজ হেডার সেকশন */}
-        <section className="bg-neutral-900/40 border-b border-neutral-900 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-6 py-10">
-            <h1 className="text-3xl font-black text-white mb-2 tracking-tight">
-              Our <span className="bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">Catalogue</span>
-            </h1>
-            <p className="text-neutral-400 text-sm">Browse our full premium collection and filter by category, price, and rating.</p>
+        {/* 🏷️ Top Sticky Results Navigation Banner */}
+        <section className="bg-white border-b border-gray-200/80 sticky top-0 z-10 backdrop-blur-md bg-white/95">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4 text-xs font-medium">
+            <div>
+              <span className="text-gray-400 font-bold uppercase tracking-wider text-[10px]">Browsing Results</span>
+              <div className="flex items-baseline gap-2 mt-0.5">
+                <h1 className="text-lg font-extrabold tracking-tight text-gray-950">
+                  "{filters.search || 'All Core Departments'}"
+                </h1>
+                <span className="text-gray-400 text-xs">({sortedProducts.length} premium items found)</span>
+              </div>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => handleSearchSubmit(filters.search)}
+              className="text-xs font-bold text-[#0066c0] hover:text-amber-600 transition-colors"
+            >
+              🔄 Refresh Showcase
+            </Button>
           </div>
         </section>
 
-        {/* 🎛️ মেইন ফিল্টার ও প্রোডাক্ট গ্রিড কন্টেন্ট */}
-        <section className="max-w-7xl mx-auto px-6 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* 🎛️ Main Layout Grid Setup */}
+        <section className="max-w-7xl mx-auto px-6 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
             
-            {/* フィルター - ফিল্টার সাইডবার বক্স */}
-            <aside className="lg:col-span-1">
-              <div className="bg-neutral-900/30 border border-neutral-900 rounded-2xl p-6 backdrop-blur-sm sticky top-24">
-                <h2 className="text-lg font-bold text-white mb-6 tracking-tight flex items-center gap-2">
-                  <span>🎛️</span> Filters
+            {/* フィルター - Left Modern Sidebar Panel */}
+            <aside className="lg:col-span-1 bg-white p-6 border border-gray-200/70 rounded-2xl shadow-sm space-y-6 lg:sticky lg:top-24">
+              <div>
+                <h2 className="text-xs font-extrabold text-gray-400 uppercase tracking-wider border-b border-gray-100 pb-3 mb-4">
+                  Refine Collection
                 </h2>
+              </div>
 
-                {/* সার্চ ফিল্টার */}
-                <div className="mb-6">
-                  <Input
-                    label="Search"
-                    type="text"
-                    placeholder="Search products..."
-                    value={filters.search}
-                    onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm transition-all"
-                  />
-                </div>
+              {/* Keyword Search Field Box */}
+              <div>
+                <label className="block text-[11px] font-bold text-gray-700 mb-2 uppercase tracking-wide">Filter Keywords</label>
+                <Input
+                  type="text"
+                  placeholder="Type parameters..."
+                  value={filters.search}
+                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 focus:border-amber-500 text-gray-900 text-xs rounded-xl focus:outline-none transition-all"
+                />
+              </div>
 
-                {/* ক্যাটাগরি রেডিও ফিল্টার */}
-                <div className="mb-6">
-                  <h3 className="font-bold text-white text-sm mb-3 tracking-wide uppercase opacity-70">Category</h3>
-                  <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                    <label className="flex items-center gap-2.5 cursor-pointer group text-neutral-400 hover:text-amber-400 transition-colors">
+              {/* Departments Radio Selectors */}
+              <div>
+                <h3 className="text-xs font-extrabold text-gray-900 mb-3 uppercase tracking-wider">Department</h3>
+                <div className="space-y-2 max-h-56 overflow-y-auto pr-1 scrollbar-thin">
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-gray-600 hover:text-amber-600 transition-colors">
+                    <input
+                      type="radio"
+                      name="category"
+                      value=""
+                      checked={filters.category === ''}
+                      onChange={() => setFilters({ ...filters, category: '' })}
+                      className="w-4 h-4 accent-amber-500 border-gray-300 focus:ring-0"
+                    />
+                    <span className={filters.category === '' ? 'font-bold text-amber-600' : ''}>Any Department</span>
+                  </label>
+                  {categories.map((cat) => (
+                    <label key={cat._id} className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-gray-600 hover:text-amber-600 transition-colors">
                       <input
                         type="radio"
                         name="category"
-                        value=""
-                        checked={filters.category === ''}
-                        onChange={() => setFilters({ ...filters, category: '' })}
-                        className="w-4 h-4 accent-amber-500 bg-neutral-950 border-neutral-800"
+                        value={cat._id}
+                        checked={filters.category === cat._id}
+                        onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                        className="w-4 h-4 accent-amber-500 border-gray-300 focus:ring-0"
                       />
-                      <span className="text-sm">All Products</span>
+                      <span className={filters.category === cat._id ? 'font-bold text-amber-600' : ''}>{cat.name}</span>
                     </label>
-                    {categories.map((cat) => (
-                      <label key={cat._id} className="flex items-center gap-2.5 cursor-pointer group text-neutral-400 hover:text-amber-400 transition-colors">
-                        <input
-                          type="radio"
-                          name="category"
-                          value={cat._id}
-                          checked={filters.category === cat._id}
-                          onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                          className="w-4 h-4 accent-amber-500 bg-neutral-950 border-neutral-800"
-                        />
-                        <span className="text-sm">{cat.name}</span>
-                      </label>
-                    ))}
-                  </div>
+                  ))}
                 </div>
-
-                {/* প্রাইজ রেঞ্জ ফিল্টার */}
-                <div className="mb-6">
-                  <h3 className="font-bold text-white text-sm mb-3 tracking-wide uppercase opacity-70">Price Range</h3>
-                  <div className="space-y-4">
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs text-neutral-400">
-                        <span>Min Price</span>
-                        <span className="text-amber-400 font-semibold">${filters.priceRange[0]}</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="2000"
-                        step="50"
-                        value={filters.priceRange[0]}
-                        onChange={(e) =>
-                          setFilters({
-                            ...filters,
-                            priceRange: [parseInt(e.target.value), filters.priceRange[1]],
-                          })
-                        }
-                        className="w-full accent-amber-500 bg-neutral-950 h-1 rounded-lg cursor-pointer"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs text-neutral-400">
-                        <span>Max Price</span>
-                        <span className="text-amber-400 font-semibold">${filters.priceRange[1]}</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="2000"
-                        step="50"
-                        value={filters.priceRange[1]}
-                        onChange={(e) =>
-                          setFilters({
-                            ...filters,
-                            priceRange: [filters.priceRange[0], parseInt(e.target.value)],
-                          })
-                        }
-                        className="w-full accent-amber-500 bg-neutral-950 h-1 rounded-lg cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* সর্ট ড্রপডাউন */}
-                <div className="mb-6">
-                  <h3 className="font-bold text-white text-sm mb-3 tracking-wide uppercase opacity-70">Sort By</h3>
-                  <select
-                    value={filters.sort}
-                    onChange={(e) => setFilters({ ...filters, sort: e.target.value as 'newest' | 'price-asc' | 'price-desc' | 'rating' })}
-                    className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 text-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm transition-all cursor-pointer"
-                  >
-                    <option value="newest" className="bg-neutral-950">Newest Arrival</option>
-                    <option value="price-asc" className="bg-neutral-950">Price: Low to High</option>
-                    <option value="price-desc" className="bg-neutral-950">Price: High to Low</option>
-                    <option value="rating" className="bg-neutral-950">Highest Rated</option>
-                  </select>
-                </div>
-
-                {/* রিসেট বাটন */}
-                <button
-                  className="w-full mt-2 py-2.5 border border-white/10 hover:border-white/20 text-white font-semibold rounded-xl text-xs bg-white/5 hover:bg-white/10 active:scale-[0.98] transition-all duration-200"
-                  onClick={() =>
-                    setFilters({
-                      search: '',
-                      category: '',
-                      priceRange: [0, 2000],
-                      sort: 'newest',
-                    })
-                  }
-                >
-                  Reset Filters
-                </button>
               </div>
+
+              {/* Price Ranges Slicers */}
+              <div className="border-t border-gray-100 pt-5">
+                <h3 className="text-xs font-extrabold text-gray-900 mb-3 uppercase tracking-wider">Budget Parameters</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between text-[11px] font-bold text-gray-500">
+                    <span>Min: <b className="text-gray-900 font-extrabold">${filters.priceRange[0]}</b></span>
+                    <span>Max: <b className="text-gray-900 font-extrabold">${filters.priceRange[1]}</b></span>
+                  </div>
+                  <div className="space-y-3 pt-1">
+                    <input
+                      type="range"
+                      min="0"
+                      max="2000"
+                      step="50"
+                      value={filters.priceRange[0]}
+                      onChange={(e) =>
+                        setFilters({
+                          ...filters,
+                          priceRange: [parseInt(e.target.value), filters.priceRange[1]],
+                        })
+                      }
+                      className="w-full accent-amber-500 h-1 bg-gray-100 rounded-lg cursor-pointer"
+                    />
+                    <input
+                      type="range"
+                      min="0"
+                      max="2000"
+                      step="50"
+                      value={filters.priceRange[1]}
+                      onChange={(e) =>
+                        setFilters({
+                          ...filters,
+                          priceRange: [filters.priceRange[0], parseInt(e.target.value)],
+                        })
+                      }
+                      className="w-full accent-amber-500 h-1 bg-gray-100 rounded-lg cursor-pointer"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sort Pipeline Selector Dropdown */}
+              <div className="border-t border-gray-100 pt-5">
+                <h3 className="text-xs font-extrabold text-gray-900 mb-2 uppercase tracking-wider">Sort Architecture</h3>
+                <select
+                  value={filters.sort}
+                  onChange={(e) => setFilters({ ...filters, sort: e.target.value as 'newest' | 'price-asc' | 'price-desc' | 'rating' })}
+                  className="w-full px-3 py-2 bg-gray-50 hover:bg-gray-100/80 border border-gray-200 text-gray-800 text-xs font-bold rounded-xl focus:outline-none cursor-pointer transition-colors"
+                >
+                  <option value="newest">Featured / Newest</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="rating">Avg. Customer Review</option>
+                </select>
+              </div>
+
+              {/* Clean Filters Action Button */}
+              <button
+                className="w-full py-2.5 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600 font-bold rounded-xl text-xs bg-white shadow-sm active:scale-[0.99] transition-all duration-150"
+                onClick={() =>
+                  setFilters({
+                    search: '',
+                    category: '',
+                    priceRange: [0, 2000],
+                    sort: 'newest',
+                  })
+                }
+              >
+                Clear Active Filters
+              </button>
             </aside>
 
-            {/* 🛍️ প্রোডাক্ট লিস্ট ও গ্রিড এরিয়া */}
-            <div className="lg:col-span-3">
-              <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-neutral-900/20 p-4 border border-neutral-900/60 rounded-2xl backdrop-blur-sm">
-                <p className="text-neutral-400 text-sm">
-                  Showing <span className="font-bold text-white">{sortedProducts.length}</span> premium products
-                </p>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => handleSearchSubmit(filters.search)}
-                  className="text-white hover:text-amber-400 transition-colors"
-                >
-                  🔄 Refresh Search
-                </Button>
-              </div>
-
+            {/* 🛍️ Right Content Showcase Area */}
+            <div className="lg:col-span-3 space-y-6">
               {error && (
-                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs">
-                  {error}
+                <div className="p-4 bg-red-50 border border-red-200/60 rounded-2xl text-red-700 text-xs font-semibold flex items-center gap-2">
+                  ⚠️ {error}
                 </div>
               )}
 
-              {/* স্কেলিটন লোডিং অবস্থা */}
+              {/* Loading Skeleton Mode */}
               {isLoading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                   {Array.from({ length: 6 }).map((_, index) => (
-                    <div key={index} className="aspect-[3/4] rounded-2xl bg-neutral-900 border border-neutral-800 animate-pulse" />
+                    <div key={index} className="aspect-[3/4] bg-white border border-gray-200/60 rounded-2xl animate-pulse" />
                   ))}
                 </div>
               ) : sortedProducts.length > 0 ? (
-                /* প্রোডাক্ট ডিসপ্লে গ্রিড */
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                /* Main Product Responsive Grid layout */
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                   {sortedProducts.map((product) => (
-                    <ProductCard
-                      key={product._id}
-                      id={product._id}
-                      title={product.title}
-                      price={product.price}
-                      originalPrice={product.price + 80}
-                      image={product.images[0] || '/placeholder.png'}
-                      category={typeof product.category === 'string' ? product.category : product.category.name}
-                      rating={product.rating}
-                      reviewCount={product.reviewCount}
-                      inStock={product.inventory > 0}
-                      onAddToCart={() => handleAddToCart(product)}
-                      isLoading={cartLoading}
-                    />
+                    <div key={product._id} className="h-full">
+                      <ProductCard
+                        id={product._id}
+                        title={product.title}
+                        price={product.price}
+                        originalPrice={product.price + 80}
+                        image={product.images[0] || '/placeholder.png'}
+                        category={typeof product.category === 'string' ? product.category : product.category.name}
+                        rating={product.rating}
+                        reviewCount={product.reviewCount}
+                        inStock={product.inventory > 0}
+                        onAddToCart={() => handleAddToCart(product)}
+                        isLoading={cartLoading}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (
-                /* কোনো প্রোডাক্ট না পাওয়া গেলে */
-                <div className="text-center py-20 border border-dashed border-neutral-900 rounded-3xl bg-neutral-900/10">
-                  <p className="text-lg font-bold text-neutral-400 mb-4">No products match your custom filters</p>
+                /* Clean Empty Filter Search Results screen */
+                <div className="text-center py-16 bg-white border border-gray-200/70 rounded-2xl shadow-sm px-6 max-w-md mx-auto mt-6">
+                  <span className="text-4xl block mb-3">🔍</span>
+                  <p className="text-gray-950 font-bold text-base mb-1">No matching results found</p>
+                  <p className="text-gray-500 text-xs mb-6">Try broadening your search keywords or resetting your parameters.</p>
                   <button
-                    className="px-6 py-2.5 bg-gradient-to-r from-amber-400 to-yellow-400 text-neutral-950 font-bold rounded-full text-xs shadow-md shadow-amber-500/10 active:scale-95 transition-all duration-200"
+                    className="w-full py-2.5 text-sm font-bold text-gray-950 rounded-xl bg-gradient-to-b from-[#f7dfa5] to-[#f0c14b] hover:from-[#f5d78e] hover:to-[#eeb933] border border-[#a88734] shadow-sm active:scale-[0.98] transition-all"
                     onClick={() =>
                       setFilters({
                         search: '',
@@ -328,7 +323,7 @@ export default function ProductsPage() {
                       })
                     }
                   >
-                    Clear Filters
+                    Reset All Filters
                   </button>
                 </div>
               )}

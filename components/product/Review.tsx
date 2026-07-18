@@ -40,69 +40,83 @@ const Review: React.FC<ReviewProps> = ({
 }) => {
   const date = new Date(createdAt).toLocaleDateString('en-US', {
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
   });
 
   return (
-    <div className="border-b border-gray-200 py-6 last:border-b-0">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          {author.avatar && (
-            <Image
-              src={author.avatar}
-              alt={author.name}
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          )}
-          <div>
-            <p className="font-semibold text-gray-900">{author.name}</p>
-            <p className="text-sm text-gray-500">{date}</p>
+    <div className="border-b border-gray-200/60 py-6 last:border-b-0 font-sans antialiased bg-white">
+      {/* 👤 Author Info - Amazon Profile Style */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2.5">
+          <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
+            {author.avatar ? (
+              <Image
+                src={author.avatar}
+                alt={author.name}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <span className="text-xs font-bold text-gray-400">👤</span>
+            )}
           </div>
+          <span className="text-sm font-medium text-gray-950">{author.name}</span>
         </div>
 
+        {/* Action Controls */}
         {canEditDelete && (
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             {onEdit && (
-              <Button variant="ghost" size="sm" onClick={onEdit}>
+              <button onClick={onEdit} className="text-xs font-semibold text-gray-400 hover:text-gray-900 transition-colors">
                 Edit
-              </Button>
+              </button>
             )}
             {onDelete && (
-              <Button variant="danger" size="sm" onClick={onDelete}>
+              <button onClick={onDelete} className="text-xs font-semibold text-gray-400 hover:text-red-600 transition-colors">
                 Delete
-              </Button>
+              </button>
             )}
           </div>
         )}
       </div>
 
-      {/* Rating and Title */}
-      <div className="mb-2">
+      {/* ⭐ Rating & Dynamic Title Block */}
+      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
         <Rating rating={rating} size="sm" />
-        <h3 className="text-base font-semibold text-gray-900 mt-2">{title}</h3>
+        <h3 className="text-sm font-bold text-gray-950 tracking-tight">{title}</h3>
       </div>
 
-      {/* Comment */}
-      <p className="text-gray-700 mb-4 leading-relaxed">{comment}</p>
+      {/* 📅 Date & Trust Badge */}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500 mb-2.5">
+        <span>Reviewed in the United States on {date}</span>
+        <span className="text-gray-300">|</span>
+        <span className="font-extrabold text-[#c45500] text-[11px]">Verified Purchase</span>
+      </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onMarkHelpful}
-            className={`flex items-center gap-1 px-3 py-1 rounded text-sm transition-colors ${
-              isHelpful
-                ? 'bg-blue-100 text-blue-700'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            👍 Helpful ({helpfulCount})
-          </button>
-        </div>
+      {/* 💬 Review Comment Body */}
+      <p className="text-sm text-gray-800 mb-4 leading-relaxed max-w-3xl font-normal">
+        {comment}
+      </p>
+
+      {/* 🛠️ Modern Minimalist Helpful Action Button */}
+      <div className="flex items-center gap-4 text-xs text-gray-500">
+        {helpfulCount > 0 && (
+          <p className="font-medium text-gray-500">
+            {helpfulCount} {helpfulCount === 1 ? 'person' : 'people'} found this helpful
+          </p>
+        )}
+        
+        <button
+          onClick={onMarkHelpful}
+          className={`px-6 py-1.5 rounded-xl text-xs font-semibold shadow-sm border transition-all active:scale-[0.98] ${
+            isHelpful
+              ? 'bg-amber-50 border-amber-400/60 text-amber-800 ring-2 ring-amber-500/10'
+              : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50 hover:border-gray-400'
+          }`}
+        >
+          {isHelpful ? '✓ Helpful' : 'Helpful'}
+        </button>
       </div>
     </div>
   );

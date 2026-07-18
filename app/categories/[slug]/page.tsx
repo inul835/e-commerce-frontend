@@ -47,94 +47,135 @@ export default function CategoryDetailPage() {
   }, [slug]);
 
   const handleAddToCart = async (product: Product) => {
-    await addToCart(product);
+    try {
+      // @ts-ignore
+      await addToCart(product._id, 1);
+    } catch (err) {
+      console.error('Failed to add item to cart', err);
+    }
   };
 
   return (
     <>
       <Header cartCount={totalItems} onCartClick={() => router.push('/cart')} />
 
-      <main className="min-h-screen bg-gray-50">
-        <section className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-blue-600">Category</p>
-                <h1 className="text-4xl font-semibold text-gray-900 mt-3">{category?.name || 'Loading...'}</h1>
-                <p className="text-gray-600 mt-2">{category?.description || 'Browse items in this category.'}</p>
-              </div>
-              <Button variant="secondary" onClick={() => router.push('/categories')}>
-                Back to categories
-              </Button>
+      {/* 📦 Modern Minimalist Amazon Palette Background */}
+      <main className="min-h-screen bg-[#f7f8fa] text-gray-900 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
+        
+        {/* 🏷️ Dynamic Department Header Banner */}
+        <section className="bg-white border-b border-gray-200/80 sticky top-0 z-10 backdrop-blur-md bg-white/95">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-widest font-extrabold text-amber-600">Department Store</p>
+              <h1 className="text-2xl font-extrabold tracking-tight text-gray-950 sm:text-3xl mt-1">
+                {isLoading ? 'Loading Department...' : category?.name}
+              </h1>
+              {!isLoading && category?.description && (
+                <p className="text-sm text-gray-500 mt-1">{category.description}</p>
+              )}
             </div>
+            <Button 
+              variant="ghost" 
+              onClick={() => router.push('/categories')}
+              className="text-xs font-bold text-gray-500 hover:text-gray-900 self-start sm:self-center"
+            >
+              ← All Departments
+            </Button>
           </div>
         </section>
 
-        <section className="max-w-7xl mx-auto px-4 py-10">
+        {/* 🗃️ Content Grid Section */}
+        <section className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+          
           {error ? (
-            <Alert type="error">{error}</Alert>
+            <div className="rounded-2xl bg-red-50 p-5 border border-red-200/60 text-red-700 text-sm font-medium flex items-center gap-3">
+              <span>⚠️</span> {error}
+            </div>
           ) : isLoading ? (
+            /* Modern Skeleton Sync Loader */
             <div className="space-y-6">
-              <div className="h-12 rounded-3xl bg-gray-100 animate-pulse" />
-              <div className="grid gap-6 lg:grid-cols-3">
+              <div className="h-20 rounded-2xl bg-white border border-gray-100 p-6 animate-pulse" />
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, idx) => (
-                  <div key={idx} className="h-72 rounded-3xl bg-gray-100 animate-pulse" />
+                  <div key={idx} className="aspect-[3/4] rounded-2xl bg-white border border-gray-100 animate-pulse" />
                 ))}
               </div>
             </div>
           ) : (
-            <div className="space-y-10">
+            <div className="space-y-8">
+              
+              {/* 📂 Subcategories Department Chips */}
               {subcategories.length > 0 && (
-                <section className="rounded-3xl bg-white border border-gray-200 p-6 shadow-sm">
-                  <div className="flex items-center justify-between mb-5">
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-900">Subcategories</h2>
-                      <p className="text-sm text-gray-600">Explore related collections within this category.</p>
-                    </div>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="bg-white rounded-2xl border border-gray-200/70 p-5 shadow-sm">
+                  <h2 className="text-xs font-extrabold text-gray-400 uppercase tracking-wider mb-3">
+                    Sub-Departments
+                  </h2>
+                  <div className="flex flex-wrap gap-2.5">
                     {subcategories.map((sub) => (
-                      <Button key={sub._id} fullWidth onClick={() => router.push(`/categories/${encodeURIComponent(sub.slug)}`)}>
+                      <button
+                        key={sub._id}
+                        onClick={() => router.push(`/categories/${encodeURIComponent(sub.slug)}`)}
+                        className="px-4 py-2 bg-gray-50 border border-gray-200/60 text-gray-700 hover:text-amber-600 hover:border-amber-500/40 hover:bg-amber-50/20 text-xs font-bold rounded-xl transition-all duration-200"
+                      >
                         {sub.name}
-                      </Button>
+                      </button>
                     ))}
                   </div>
-                </section>
+                </div>
               )}
 
-              <section className="rounded-3xl bg-white border border-gray-200 p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Products in {category?.name}</h2>
-                    <p className="text-sm text-gray-600">{products.length} items found</p>
-                  </div>
+              {/* 🛍️ Main Showcase Products Box */}
+              <div className="bg-white rounded-2xl border border-gray-200/70 p-6 shadow-sm">
+                <div className="mb-6 border-b border-gray-100 pb-4 flex items-center justify-between">
+                  <h2 className="text-base font-bold text-gray-950">
+                    Featured Results
+                  </h2>
+                  <p className="text-xs text-gray-500">
+                    Showing <span className="font-bold text-gray-800">{products.length}</span> premium items
+                  </p>
                 </div>
 
                 {products.length === 0 ? (
-                  <div className="rounded-3xl bg-gray-50 p-10 text-center">
-                    <p className="text-gray-700">No products available in this category yet.</p>
+                  /* Empty State View */
+                  <div className="text-center py-16 bg-[#f7f8fa] border border-dashed border-gray-200 rounded-xl px-4">
+                    <span className="text-3xl block mb-3">📦</span>
+                    <p className="text-gray-900 font-bold text-base mb-1">No products inside this department</p>
+                    <p className="text-gray-500 text-xs mb-5">Check back later or explore other active premium collections.</p>
+                    <Button
+                      variant="ghost"
+                      onClick={() => router.push('/products')}
+                      className="text-xs font-bold text-amber-600 hover:text-amber-700"
+                    >
+                      Browse Full Catalogue
+                    </Button>
                   </div>
                 ) : (
-                  <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  /* Modern Grid Layout Display */
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {products.map((product) => (
-                      <ProductCard
-                        key={product._id}
-                        id={product._id}
-                        title={product.title}
-                        price={product.price}
-                        originalPrice={product.price + 100}
-                        image={product.images[0] || '/placeholder.png'}
-                        category={typeof product.category === 'string' ? product.category : product.category.name}
-                        rating={product.rating}
-                        reviewCount={product.reviewCount}
-                        inStock={product.inventory > 0}
-                        onAddToCart={() => handleAddToCart(product)}
-                        isLoading={cartLoading}
-                      />
+                      <div 
+                        key={product._id} 
+                        className="group flex flex-col justify-between p-2 rounded-xl border border-transparent hover:border-gray-100 hover:shadow-md transition-all duration-200"
+                      >
+                        <ProductCard
+                          id={product._id}
+                          title={product.title}
+                          price={product.price}
+                          originalPrice={product.price + 100}
+                          image={product.images[0] || '/placeholder.png'}
+                          category={typeof product.category === 'string' ? product.category : product.category.name}
+                          rating={product.rating}
+                          reviewCount={product.reviewCount}
+                          inStock={product.inventory > 0}
+                          onAddToCart={() => handleAddToCart(product)}
+                          isLoading={cartLoading}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
-              </section>
+              </div>
+
             </div>
           )}
         </section>

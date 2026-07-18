@@ -6,49 +6,51 @@ import Link from 'next/link';
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
-  // স্মুথলি একদম স্ক্রোলের উপরে যাওয়ার ফাংশন
+  // স্ক্রোলের একদম উপরে স্মুথলি যাওয়ার ফাংশন
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    /* 🏛️ Amazon Signature Dark Navy Footer Layout */
-    <footer className="w-full bg-[#232f3e] text-neutral-300 font-sans antialiased mt-20">
+    /* 🏛️ Modern Minimalist Amazon Dark Footer Layout */
+    <footer className="w-full bg-[#1e2630] text-gray-300 font-sans antialiased mt-24 border-t border-gray-800">
       
-      {/* ⬆️ Amazon Signature "Back to top" Button */}
+      {/* ⬆️ Amazon Signature Smooth "Back to top" Action Button */}
       <button 
         onClick={scrollToTop}
-        className="w-full bg-[#37475a] hover:bg-[#485769] text-white text-xs py-3.5 text-center font-normal transition-colors duration-150 cursor-pointer"
+        className="w-full bg-[#2a3644] hover:bg-[#313f50] text-gray-200 hover:text-white text-xs font-bold py-4 text-center tracking-wide transition-all duration-200 cursor-pointer border-b border-gray-800/50"
       >
         Back to top
       </button>
 
-      {/* Footer Grid Container */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10 items-start">
+      {/* Footer Content Grid */}
+      <div className="max-w-7xl mx-auto px-6 py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 items-start">
           
-          {/* Get to Know Us / About */}
-          <div className="space-y-3">
-            <h3 className="font-bold text-white text-sm tracking-tight">
+          {/* Section 1: Brand Info */}
+          <div className="space-y-4">
+            <h3 className="font-extrabold text-white text-xs uppercase tracking-widest text-amber-500">
               Get to Know Us
             </h3>
-            <p className="text-neutral-400 text-xs leading-relaxed font-normal max-w-xs">
-              Your trusted online marketplace for quality products at competitive prices. Curating hyper-premium essentials.
+            <p className="text-gray-400 text-xs leading-relaxed font-medium max-w-xs">
+              Your trusted online marketplace for premium products. Delivering exceptional essentials and quality curated precisely for your daily lifestyle.
             </p>
           </div>
 
-          {/* Shop */}
-          <div>
-            <h3 className="font-bold text-white text-sm tracking-tight mb-3">Shop with Us</h3>
-            <ul className="space-y-2 text-xs">
+          {/* Section 2: Shop Links */}
+          <div className="space-y-4">
+            <h3 className="font-extrabold text-white text-xs uppercase tracking-widest text-amber-500">
+              Shop with Us
+            </h3>
+            <ul className="space-y-2.5 text-xs font-medium">
               {[
                 { label: 'All Products', href: '/products' },
                 { label: 'Categories', href: '/categories' },
-                { label: 'Sale', href: '/sale' },
+                { label: 'Sale Discounts', href: '/sale' },
                 { label: 'New Arrivals', href: '/new-arrivals' },
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-neutral-300 hover:text-white hover:underline transition-all">
+                  <Link href={link.href} className="text-gray-400 hover:text-white hover:underline transition-colors duration-150">
                     {link.label}
                   </Link>
                 </li>
@@ -56,18 +58,20 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Support */}
-          <div>
-            <h3 className="font-bold text-white text-sm tracking-tight mb-3">Let Us Help You</h3>
-            <ul className="space-y-2 text-xs">
+          {/* Section 3: Support Links */}
+          <div className="space-y-4">
+            <h3 className="font-extrabold text-white text-xs uppercase tracking-widest text-amber-500">
+              Let Us Help You
+            </h3>
+            <ul className="space-y-2.5 text-xs font-medium">
               {[
                 { label: 'Help Center', href: '/help' },
-                { label: 'Contact Us', href: '/contact' },
-                { label: 'Shipping Info', href: '/shipping' },
+                { label: 'Contact Support', href: '/contact' },
+                { label: 'Shipping Logistics', href: '/shipping' },
                 { label: 'Returns & Replacements', href: '/returns' },
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-neutral-300 hover:text-white hover:underline transition-all">
+                  <Link href={link.href} className="text-gray-400 hover:text-white hover:underline transition-colors duration-150">
                     {link.label}
                   </Link>
                 </li>
@@ -75,17 +79,19 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Legal / Terms */}
-          <div>
-            <h3 className="font-bold text-white text-sm tracking-tight mb-3">EStore Policy</h3>
-            <ul className="space-y-2 text-xs">
+          {/* Section 4: Legal & Policies */}
+          <div className="space-y-4">
+            <h3 className="font-extrabold text-white text-xs uppercase tracking-widest text-amber-500">
+              EStore Policy
+            </h3>
+            <ul className="space-y-2.5 text-xs font-medium">
               {[
                 { label: 'Privacy Policy', href: '/privacy' },
                 { label: 'Terms & Conditions', href: '/terms' },
-                { label: 'Cookie Policy', href: '/cookies' },
+                { label: 'Cookie Preferences', href: '/cookies' },
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-neutral-300 hover:text-white hover:underline transition-all">
+                  <Link href={link.href} className="text-gray-400 hover:text-white hover:underline transition-colors duration-150">
                     {link.label}
                   </Link>
                 </li>
@@ -95,23 +101,25 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* 🏛️ Amazon Bottom Deep Dark Branding Strip (#131921) */}
-      <div className="bg-[#131921] py-8 border-t border-neutral-800">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center justify-center space-y-4">
+      {/* 🏛️ Amazon Bottom Deep Dark Sub-Footer (#11161e) */}
+      <div className="bg-[#11161e] py-10 border-t border-gray-900">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center justify-center space-y-5">
           
-          {/* Logo Brand */}
-          <Link href="/" className="text-sm font-black text-white select-none">
-            EStore<span className="text-[#febd69]">.app</span>
+          {/* Slick Minimal Logo */}
+          <Link href="/" className="text-base font-black tracking-tight text-white select-none">
+            EStore<span className="text-[#febd69] font-extrabold">.app</span>
           </Link>
 
-          {/* Links & Copyright */}
-          <div className="flex flex-col items-center space-y-2 text-[11px] text-neutral-400">
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1">
-              <Link href="/terms" className="hover:underline text-neutral-300">Conditions of Use</Link>
-              <Link href="/privacy" className="hover:underline text-neutral-300">Privacy Notice</Link>
-              <Link href="/cookies" className="hover:underline text-neutral-300">Consumer Health Data Privacy Disclosure</Link>
+          {/* Legal Disclosures & Copyright Wrap */}
+          <div className="flex flex-col items-center space-y-3 text-[11px] font-medium text-gray-500">
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-gray-400">
+              <Link href="/terms" className="hover:underline hover:text-amber-500 transition-colors">Conditions of Use</Link>
+              <Link href="/privacy" className="hover:underline hover:text-amber-500 transition-colors">Privacy Notice</Link>
+              <Link href="/cookies" className="hover:underline hover:text-amber-500 transition-colors">Consumer Health Privacy Disclosure</Link>
             </div>
-            <p className="font-normal pt-1">&copy; 1996-{currentYear}, EStore.com, Inc. or its affiliates</p>
+            <p className="font-normal text-gray-600 tracking-wide text-center pt-2">
+              &copy; 1996-{currentYear}, EStore.com, Inc. or its affiliates. All modern rights reserved.
+            </p>
           </div>
         </div>
       </div>

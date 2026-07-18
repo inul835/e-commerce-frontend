@@ -6,8 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Header, Footer, Input, Button, Alert, OrderSummary } from '@/components';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { ordersApi, paymentsApi } from '@/lib/api';
-import { loadStripe } from '@stripe/stripe-js';
+import { ordersApi } from '@/lib/api';
 
 const initialAddress = {
   street: '',
@@ -75,78 +74,113 @@ export default function CheckoutPage() {
     <>
       <Header cartCount={items.length} onCartClick={() => router.push('/cart')} />
 
-      <main className="min-h-screen bg-gray-50">
-        <section className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
-            <p className="text-gray-600 mt-2">Review your order, fill in shipping details, and complete payment.</p>
+      {/* 📦 Modern Minimalist Amazon Palette */}
+      <main className="min-h-screen bg-[#f7f8fa] text-gray-900 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
+        
+        {/* 🏷️ Top Minimal Sub-Header */}
+        <section className="bg-white border-b border-gray-200/80 sticky top-0 z-10 backdrop-blur-md bg-white/95">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-extrabold tracking-tight text-gray-950 sm:text-2xl">
+                Review your <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">Order</span>
+              </h1>
+              <p className="text-xs text-gray-500 mt-0.5">
+                ({totalItems} items in your shopping basket)
+              </p>
+            </div>
+            <Link href="/cart" className="text-xs font-semibold text-amber-600 hover:text-amber-700 hover:underline">
+              ← Return to Cart
+            </Link>
           </div>
         </section>
 
-        <section className="max-w-7xl mx-auto px-4 py-10">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* 🗛 Main Grid Layout */}
+        <section className="max-w-7xl mx-auto px-6 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            
+            {/* 📝 Left Content: Shipping and Methods */}
             <div className="lg:col-span-2 space-y-6">
               {!isAuthenticated && (
-                <Alert type="error">
-                  You need to <Link href="/auth/login" className="font-semibold text-blue-600 hover:underline">sign in</Link> before completing checkout.
+                <Alert type="error" className="rounded-2xl border-red-200/60 bg-red-50 text-red-700 text-sm">
+                  You need to <Link href="/auth/login" className="font-bold text-amber-600 hover:underline">sign in</Link> before completing checkout.
                 </Alert>
               )}
 
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Shipping Address</h2>
+              {/* Shipping Form Card */}
+              <div className="bg-white rounded-2xl border border-gray-200/70 p-6 shadow-sm">
+                <h2 className="text-lg font-bold text-gray-950 mb-5 pb-2 border-b border-gray-100 flex items-center gap-2">
+                  <span className="text-amber-500">1</span> Shipping Address
+                </h2>
+                
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <Input
                     label="Street Address"
+                    placeholder="123 Main St, Apt 4B"
                     value={address.street}
                     onChange={(e) => handleFieldChange('street', e.target.value)}
                     required
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:bg-white focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/10 transition-all duration-200"
                   />
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                       label="City"
+                      placeholder="New York"
                       value={address.city}
                       onChange={(e) => handleFieldChange('city', e.target.value)}
                       required
+                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:bg-white focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/10 transition-all duration-200"
                     />
                     <Input
-                      label="State"
+                      label="State / Province"
+                      placeholder="NY"
                       value={address.state}
                       onChange={(e) => handleFieldChange('state', e.target.value)}
                       required
+                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:bg-white focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/10 transition-all duration-200"
                     />
                   </div>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
-                      label="Zip Code"
+                      label="Zip / Postal Code"
+                      placeholder="10001"
                       value={address.zipCode}
                       onChange={(e) => handleFieldChange('zipCode', e.target.value)}
                       required
+                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:bg-white focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/10 transition-all duration-200"
                     />
                     <Input
                       label="Country"
+                      placeholder="United States"
                       value={address.country}
                       onChange={(e) => handleFieldChange('country', e.target.value)}
                       required
+                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:bg-white focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/10 transition-all duration-200"
                     />
                   </div>
 
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-sm font-semibold text-gray-900 mb-2">Payment Method</p>
-                    <div className="grid grid-cols-2 gap-3">
+                  {/* 💳 Payment Gateways Method Box */}
+                  <div className="mt-8 pt-6 border-t border-gray-100">
+                    <h2 className="text-lg font-bold text-gray-950 mb-4 flex items-center gap-2">
+                      <span className="text-amber-500">2</span> Select Payment Method
+                    </h2>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {[
-                        { value: 'credit_card', label: 'Credit Card' },
-                        { value: 'debit_card', label: 'Debit Card' },
-                        { value: 'paypal', label: 'PayPal' },
-                        { value: 'stripe', label: 'Stripe' },
+                        { value: 'credit_card', label: '💳 Credit Card' },
+                        { value: 'debit_card', label: '🏦 Debit Card' },
+                        { value: 'paypal', label: '🔹 PayPal' },
+                        { value: 'stripe', label: '⚡ Stripe' },
                       ].map((option) => (
                         <button
                           key={option.value}
                           type="button"
                           onClick={() => setPaymentMethod(option.value as typeof paymentMethod)}
-                          className={`rounded-lg border px-3 py-3 text-left text-sm font-medium transition-colors ${
+                          className={`rounded-xl border p-3.5 text-center text-xs font-bold tracking-tight transition-all duration-200 ${
                             paymentMethod === option.value
-                              ? 'border-blue-600 bg-blue-50 text-blue-700'
-                              : 'border-gray-300 bg-white text-gray-700 hover:border-blue-500'
+                              ? 'border-amber-500 bg-amber-50/60 text-amber-700 shadow-sm ring-2 ring-amber-500/20'
+                              : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
                           }`}
                         >
                           {option.label}
@@ -155,51 +189,66 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <Input
-                    label="Order Notes"
-                    textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                  />
+                  {/* Order Notes Field */}
+                  <div className="mt-6 pt-4 border-t border-gray-100">
+                    <Input
+                      label="Delivery Instructions (Optional)"
+                      textarea
+                      placeholder="Add apartment codes, drop-off details, etc..."
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:bg-white focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/10 transition-all duration-200 min-h-[80px]"
+                    />
+                  </div>
 
                   {status.message && (
-                    <Alert type={status.type || 'success'}>{status.message}</Alert>
+                    <div className="mt-4">
+                      <Alert type={status.type || 'success'} className="rounded-xl">
+                        {status.message}
+                      </Alert>
+                    </div>
                   )}
 
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      fullWidth
-                      size="lg"
-                      isLoading={isSubmitting || cartLoading}
-                    >
-                      Place Order
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      fullWidth
-                      onClick={() => router.push('/products')}
-                    >
-                      Continue Shopping
-                    </Button>
-                  </div>
+                  {/* Hidden Form Submit Handler to trigger via Outer Layout Button */}
+                  <button type="submit" id="hidden-checkout-submit" className="hidden" />
                 </form>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
-                <OrderSummary subtotal={subtotal} tax={tax} shipping={shipping} discount={0} items={totalItems} />
+            {/* 🛒 Right Sidebar: Sticky Amazon Style Order Summary */}
+            <div className="lg:col-span-1 lg:sticky lg:top-24 space-y-4">
+              <div className="bg-white rounded-2xl border border-gray-200/70 p-6 shadow-sm">
+                
+                {/* Core Place Order Call-To-Action Button */}
+                <button
+                  onClick={() => document.getElementById('hidden-checkout-submit')?.click()}
+                  disabled={isSubmitting || cartLoading}
+                  className="w-full mb-5 py-3 text-center text-sm font-extrabold text-gray-950 rounded-xl bg-gradient-to-b from-[#f7dfa5] to-[#f0c14b] hover:from-[#f5d78e] hover:to-[#eeb933] border border-[#a88734] hover:border-[#846a29] shadow-sm disabled:opacity-50 active:scale-[0.99] transition-all duration-150"
+                >
+                  {isSubmitting ? 'Processing Order...' : 'Place Your Order'}
+                </button>
+
+                <p className="text-[11px] text-gray-500 text-center leading-relaxed mb-4 border-b border-gray-100 pb-4">
+                  By placing your order, you agree to our brand's privacy notice and conditions of modern use.
+                </p>
+
+                <h3 className="text-base font-bold text-gray-950 mb-3">Order Summary</h3>
+                <div className="modern-summary-wrapper text-sm">
+                  <OrderSummary subtotal={subtotal} tax={tax} shipping={shipping} discount={0} items={totalItems} />
+                </div>
               </div>
 
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Shipping</h2>
-                <p className="text-gray-600">Standard shipping rates apply based on your location. Orders over $100 ship free.</p>
+              {/* Security Shipping Notice Badge */}
+              <div className="bg-white rounded-2xl border border-gray-200/70 p-5 shadow-sm text-xs text-gray-500 space-y-2">
+                <h4 className="font-bold text-gray-800 text-sm flex items-center gap-1.5">
+                  🛡️ Secure Checkout Guarantee
+                </h4>
+                <p className="leading-relaxed">
+                  Standard distribution rates apply based on location parameters. Orders over $100 trigger free premium shipping benefits.
+                </p>
               </div>
             </div>
+
           </div>
         </section>
       </main>
